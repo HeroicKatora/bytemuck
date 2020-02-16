@@ -131,3 +131,18 @@ pub unsafe trait TransparentWrapper<Wrapped: ?Sized> {
     }
   }
 }
+
+unsafe impl<W> TransparentWrapper<W> for core::mem::ManuallyDrop<W> {}
+
+unsafe impl<W> TransparentWrapper<W> for core::num::Wrapping<W> {}
+
+unsafe impl<P> TransparentWrapper<P> for core::pin::Pin<P>
+where
+    P: core::ops::Deref,
+    <P as core::ops::Deref>::Target: Unpin,
+{}
+
+unsafe impl<T, U> TransparentWrapper<[U]> for [T]
+where
+    T: TransparentWrapper<U>
+{}
